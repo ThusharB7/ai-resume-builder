@@ -20,12 +20,6 @@ async function createUser(name, email, passwordHash) {
   return result.rows[0];
 }
 
-module.exports = {
-  findUserByEmail,
-  createUser,
-  verifyUser,
-};
-
 async function verifyUser(userId) {
   const result = await pool.query(
     `UPDATE users
@@ -38,3 +32,21 @@ async function verifyUser(userId) {
 
   return result.rows[0];
 }
+
+async function findUserById(userId) {
+  const result = await pool.query(
+    `SELECT id, name, email, is_verified
+     FROM users
+     WHERE id = $1`,
+    [userId]
+  );
+
+  return result.rows[0];
+}
+
+module.exports = {
+  findUserByEmail,
+  createUser,
+  verifyUser,
+  findUserById,
+};

@@ -1,16 +1,28 @@
 const express = require("express");
+const projectRoutes = require("./src/routes/projectRoutes");
 const cors = require("cors");
 require("dotenv").config();
 
 const pool = require("./src/config/db");
 const authRoutes = require("./src/routes/authRoutes");
-
+const resumeRoutes = require("./src/routes/resumeRoutes");
+const educationRoutes = require("./src/routes/educationRoutes");
 const app = express();
+const experienceRoutes = require("./src/routes/experienceRoutes");
+const skillRoutes = require("./src/routes/skillRoutes");
+
+// Global middleware FIRST
 
 app.use(cors());
 app.use(express.json());
 
+// Routes AFTER middleware
 app.use("/api/auth", authRoutes);
+app.use("/api/resumes", resumeRoutes);
+app.use("/api", educationRoutes);
+app.use("/api", experienceRoutes);
+app.use("/api", projectRoutes);
+app.use("/api", skillRoutes);
 
 app.get("/", (req, res) => {
   res.json({
