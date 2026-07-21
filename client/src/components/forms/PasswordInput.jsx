@@ -19,6 +19,7 @@ export default function PasswordInput({
 
       <div className="relative">
         <Input
+          className="h-12 pr-10"
           id={id}
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}

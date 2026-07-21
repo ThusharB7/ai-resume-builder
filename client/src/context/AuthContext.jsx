@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 
 import authService from "@/services/authService";
 import { getToken, removeToken, setToken } from "@/utils/auth";
@@ -7,7 +7,7 @@ import { getToken, removeToken, setToken } from "@/utils/auth";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const navigate = useNavigate();
+ 
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,10 +45,9 @@ export function AuthProvider({ children }) {
 };
 
   const logout = () => {
-    removeToken();
-    setUser(null);
-    navigate("/login");
-  };
+  removeToken();
+  setUser(null);
+};
 
   return (
     <AuthContext.Provider

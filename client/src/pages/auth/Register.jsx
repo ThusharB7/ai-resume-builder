@@ -1,7 +1,13 @@
+import AuthLayout from "@/layouts/AuthLayout";
+import RegisterForm from "@/components/forms/RegisterForm";
+
 export default function Register() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold">Register</h1>
-    </div>
+    <AuthLayout
+      title="Create Account"
+      subtitle="Join AI Resume Builder today."
+    >
+      <RegisterForm />
+    </AuthLayout>
   );
 }

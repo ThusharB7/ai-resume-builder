@@ -15,12 +15,13 @@ export default function TextInput({
       <Label htmlFor={id}>{label}</Label>
 
       <Input
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        {...register}
-        {...props}
-      />
+  className="h-12"
+  id={id}
+  type={type}
+  placeholder={placeholder}
+  {...register}
+  {...props}
+/>
 
       {error && (
         <p className="text-sm text-red-500">{error.message}</p>
