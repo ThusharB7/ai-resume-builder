@@ -5,36 +5,106 @@ const ResumeContext = createContext();
 const initialResume = {
   personal: {
     fullName: "",
+    jobTitle: "",
     email: "",
     phone: "",
     location: "",
-    jobTitle: "",
     linkedin: "",
     github: "",
   },
 
   summary: "",
 
-  education: [],
+  education: [
+    {
+      degree: "",
+      institution: "",
+      startDate: "",
+      endDate: "",
+      grade: "",
+    },
+  ],
 
-  experience: [],
+  experience: [
+    {
+      company: "",
+      position: "",
+      startDate: "",
+      endDate: "",
+      description: "",
+    },
+  ],
 
   skills: [],
 
-  projects: [],
+  projects: [
+    {
+      title: "",
+      description: "",
+      technologies: "",
+      github: "",
+      live: "",
+    },
+  ],
 
-  certifications: [],
+  certifications: [
+    {
+      name: "",
+      issuer: "",
+      year: "",
+    },
+  ],
 
-  languages: [],
+  languages: [
+    {
+      name: "",
+      proficiency: "",
+    },
+  ],
 };
 
-export function ResumeProvider({ children }) {
+export const ResumeProvider = ({ children }) => {
   const [resume, setResume] = useState(initialResume);
+  const [resumeId, setResumeId] = useState(null);
 
-  const updateSection = (section, value) => {
+  // Update non-array sections
+  const updateSection = (section, data) => {
     setResume((prev) => ({
       ...prev,
-      [section]: value,
+      [section]: data,
+    }));
+  };
+
+  // Add item
+  const addItem = (section, newItem) => {
+    setResume((prev) => ({
+      ...prev,
+      [section]: [...prev[section], newItem],
+    }));
+  };
+
+  // Update item
+  const updateItem = (section, index, field, value) => {
+    setResume((prev) => {
+      const updated = [...prev[section]];
+
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        [section]: updated,
+      };
+    });
+  };
+
+  // Remove item
+  const removeItem = (section, index) => {
+    setResume((prev) => ({
+      ...prev,
+      [section]: prev[section].filter((_, i) => i !== index),
     }));
   };
 
@@ -42,14 +112,18 @@ export function ResumeProvider({ children }) {
     <ResumeContext.Provider
       value={{
         resume,
+        setResume,
+        resumeId,
+        setResumeId,
         updateSection,
+        addItem,
+        updateItem,
+        removeItem,
       }}
     >
       {children}
     </ResumeContext.Provider>
   );
-}
+};
 
-export function useResume() {
-  return useContext(ResumeContext);
-}
+export const useResume = () => useContext(ResumeContext);
