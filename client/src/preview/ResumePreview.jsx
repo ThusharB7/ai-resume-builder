@@ -1,13 +1,18 @@
+import { forwardRef } from "react";
 import { useResume } from "@/context/ResumeContext";
 
-export default function ResumePreview() {
+const ResumePreview = forwardRef((props, ref) => {
   const { resume } = useResume();
 
   const { personal, summary } = resume;
 
   return (
-    <div className="sticky top-6">
-      <div className="mx-auto min-h-[1123px] max-w-[794px] rounded-lg bg-white p-10 text-black shadow-2xl">
+    <div className="w-full">
+      <div
+  ref={ref}
+  className="mx-auto w-[794px] min-h-[1123px] bg-white p-10 text-black"
+>
+      
         {/* Header */}
         <header className="border-b border-gray-300 pb-6">
           <h1 className="text-4xl font-bold">
@@ -27,6 +32,7 @@ export default function ResumePreview() {
           </div>
         </header>
 
+        {/* Professional Summary */}
         <section className="mt-8">
           <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase tracking-wide">
             Professional Summary
@@ -38,121 +44,117 @@ export default function ResumePreview() {
           </p>
         </section>
 
+        {/* Education */}
         <section className="mt-8">
-  <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
-    Education
-  </h2>
+          <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
+            Education
+          </h2>
 
-  {resume.education.map((edu, index) => (
-    <div key={index} className="mb-4">
-      <h3 className="font-semibold">{edu.degree}</h3>
+          {resume.education.map((edu, index) => (
+            <div key={index} className="mb-4">
+              <h3 className="font-semibold">{edu.degree}</h3>
 
-      <p className="text-gray-700">
-        {edu.institution}
-      </p>
+              <p className="text-gray-700">{edu.institution}</p>
 
-      <p className="text-sm text-gray-500">
-        {edu.startDate} - {edu.endDate}
-      </p>
+              <p className="text-sm text-gray-500">
+                {edu.startDate} - {edu.endDate}
+              </p>
 
-      <p className="text-sm">
-        {edu.grade}
-      </p>
-    </div>
-  ))}
-</section>
+              <p className="text-sm">{edu.grade}</p>
+            </div>
+          ))}
+        </section>
 
-<section className="mt-8">
-  <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
-    Experience
-  </h2>
+        {/* Experience */}
+        <section className="mt-8">
+          <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
+            Experience
+          </h2>
 
-  {resume.experience.map((exp, index) => (
-    <div key={index} className="mb-5">
-      <h3 className="font-semibold">
-        {exp.position}
-      </h3>
+          {resume.experience.map((exp, index) => (
+            <div key={index} className="mb-5">
+              <h3 className="font-semibold">{exp.position}</h3>
 
-      <p className="text-gray-700">
-        {exp.company}
-      </p>
+              <p className="text-gray-700">{exp.company}</p>
 
-      <p className="text-sm text-gray-500">
-        {exp.startDate} - {exp.endDate}
-      </p>
+              <p className="text-sm text-gray-500">
+                {exp.startDate} - {exp.endDate}
+              </p>
 
-      <p className="mt-2 whitespace-pre-line text-gray-700">
-        {exp.description}
-      </p>
-    </div>
-  ))}
-</section>
+              <p className="mt-2 whitespace-pre-line text-gray-700">
+                {exp.description}
+              </p>
+            </div>
+          ))}
+        </section>
 
+        {/* Skills */}
+        <section className="mt-8">
+          <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
+            Skills
+          </h2>
 
-<section className="mt-8">
-  <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
-    Skills
-  </h2>
+          <div className="flex flex-wrap gap-2">
+            {resume.skills.map((skill, index) => (
+              <span
+                key={index}
+                className="rounded bg-gray-200 px-3 py-1 text-sm"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </section>
 
-  <div className="flex flex-wrap gap-2">
-    {resume.skills.map((skill, index) => (
-      <span
-        key={index}
-        className="rounded bg-gray-200 px-3 py-1 text-sm"
-      >
-        {skill}
-      </span>
-    ))}
-  </div>
-</section>
+        {/* Projects */}
+        <section className="mt-8">
+          <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
+            Projects
+          </h2>
 
-<section className="mt-8">
-  <h2 className="mb-3 border-b pb-2 text-lg font-bold uppercase">
-    Projects
-  </h2>
+          {resume.projects.map((project, index) => (
+            <div key={index} className="mb-6">
+              <h3 className="text-lg font-semibold">
+                {project.title || "Project Title"}
+              </h3>
 
-  {resume.projects.map((project, index) => (
-    <div key={index} className="mb-6">
-      <h3 className="text-lg font-semibold">
-        {project.title || "Project Title"}
-      </h3>
+              <p className="mt-2 text-gray-700">
+                {project.description}
+              </p>
 
-      <p className="mt-2 text-gray-700">
-        {project.description}
-      </p>
+              {project.technologies && (
+                <p className="mt-2 text-sm">
+                  <strong>Tech:</strong> {project.technologies}
+                </p>
+              )}
 
-      {project.technologies && (
-        <p className="mt-2 text-sm">
-          <strong>Tech:</strong> {project.technologies}
-        </p>
-      )}
+              <div className="mt-2 flex flex-wrap gap-4 text-sm text-blue-600">
+                {project.github && (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    GitHub
+                  </a>
+                )}
 
-      <div className="mt-2 flex flex-wrap gap-4 text-sm text-blue-600">
-        {project.github && (
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
-        )}
-
-        {project.live && (
-          <a
-            href={project.live}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Live Demo
-          </a>
-        )}
-      </div>
-    </div>
-  ))}
-</section>
-
+                {project.live && (
+                  <a
+                    href={project.live}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Live Demo
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </section>
       </div>
     </div>
   );
-}
+});
+
+export default ResumePreview;

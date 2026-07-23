@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { toast } from "sonner";
 
 import ResumeSidebar from "@/pages/resume/ResumeSidebar";
@@ -9,6 +10,7 @@ import SkillsForm from "@/pages/resume/SkillsForm";
 import ProjectsForm from "@/pages/resume/ProjectsForm";
 
 import ResumePreview from "@/preview/ResumePreview";
+import ResumePDF from "@/pdf/ResumePDF";
 
 import {
   createResume,
@@ -16,8 +18,7 @@ import {
 } from "@/services/resumeService";
 
 import { useResume } from "@/context/ResumeContext";
-
-export default function ResumeBuilder() {
+ export default function ResumeBuilder() {
   const [activeSection, setActiveSection] = useState("Personal");
 
   const {
@@ -35,7 +36,6 @@ export default function ResumeBuilder() {
 
       const title = `${resume.personal.fullName}'s Resume`;
 
-      // First Save -> Create Resume
       if (!resumeId) {
         const response = await createResume({
           title,
@@ -45,7 +45,6 @@ export default function ResumeBuilder() {
 
         setResumeId(newResumeId);
 
-        // Immediately save full resume
         await updateResume(newResumeId, {
           title,
           template: "modern",
@@ -55,7 +54,6 @@ export default function ResumeBuilder() {
 
         toast.success("Resume saved successfully!");
       } else {
-        // Existing Resume -> Update
         await updateResume(resumeId, {
           title,
           template: "modern",
@@ -74,8 +72,7 @@ export default function ResumeBuilder() {
       );
     }
   };
-
-  return (
+    return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -88,16 +85,33 @@ export default function ResumeBuilder() {
           </p>
         </div>
 
-        <button
-          onClick={handleSave}
-          className="rounded-xl bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-700"
-        >
-          Save Resume
-        </button>
+        <div className="flex gap-3">
+          <PDFDownloadLink
+            document={<ResumePDF resume={resume} />}
+            fileName={`${
+              resume.personal.fullName?.trim() || "Resume"
+            }.pdf`}
+          >
+            {({ loading }) => (
+              <button
+                disabled={loading}
+                className="rounded-xl bg-green-600 px-5 py-2 font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? "Generating..." : "Download PDF"}
+              </button>
+            )}
+          </PDFDownloadLink>
+
+          <button
+            onClick={handleSave}
+            className="rounded-xl bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-700"
+          >
+            Save Resume
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-8 xl:grid-cols-5">
-        {/* Left Side */}
         <div className="space-y-6 xl:col-span-2">
           <ResumeSidebar
             active={activeSection}
@@ -106,19 +120,14 @@ export default function ResumeBuilder() {
 
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
             {activeSection === "Personal" && <PersonalInfoForm />}
-
             {activeSection === "Education" && <EducationForm />}
-
             {activeSection === "Experience" && <ExperienceForm />}
-
             {activeSection === "Skills" && <SkillsForm />}
-
             {activeSection === "Projects" && <ProjectsForm />}
           </div>
         </div>
 
-        {/* Right Side */}
-        <div className="rounded-3xl bg-zinc-200 p-8 xl:col-span-3">
+        <div className="overflow-auto rounded-3xl bg-zinc-200 p-8 xl:col-span-3">
           <ResumePreview />
         </div>
       </div>
