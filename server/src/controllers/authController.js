@@ -58,17 +58,26 @@ async function register(req, res) {
     await createVerification(user.id, otpHash, expiresAt);
 
     // Send verification email
-    await sendVerificationOtp(user.email, otp);
+    try {
+  await sendVerificationOtp(user.email, otp);
+} catch (error) {
+  console.error("Email sending failed:", error.message);
 
-    return res.status(201).json({
-      message: "Registration successful. Please verify your email.",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        isVerified: user.is_verified,
-      },
-    });
+  // Development only
+  console.log("================================");
+  console.log(`OTP for ${user.email}: ${otp}`);
+  console.log("================================");
+}
+
+return res.status(201).json({
+  message: "Registration successful. Please verify your email.",
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    isVerified: user.is_verified,
+  },
+});
   } catch (error) {
     console.error("Register error:", error);
 
@@ -303,8 +312,13 @@ async function getMe(req, res) {
     }
 
     return res.status(200).json({
-      user,
-    });
+  user: {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    isVerified: user.is_verified,
+  },
+});
   } catch (error) {
     console.error("Get Me error:", error);
 

@@ -34,65 +34,37 @@ async function findResumeById(resumeId, userId) {
     `SELECT *
      FROM resumes
      WHERE id = $1
-     AND user_id = $2`,
+       AND user_id = $2`,
     [resumeId, userId]
   );
 
   return result.rows[0];
 }
 
-async function updateResume(
-  resumeId,
-  userId,
-  data
-) {
+async function updateResume(resumeId, userId, data) {
   const {
     title,
-    first_name,
-    last_name,
-    phone,
-    email,
-    location,
-    linkedin,
-    github,
-    portfolio,
-    summary,
-    template,
-    status,
+    template = "modern",
+    status = "draft",
+    resume_data,
   } = data;
 
   const result = await pool.query(
     `UPDATE resumes
      SET
        title = $1,
-       first_name = $2,
-       last_name = $3,
-       phone = $4,
-       email = $5,
-       location = $6,
-       linkedin = $7,
-       github = $8,
-       portfolio = $9,
-       summary = $10,
-       template = $11,
-       status = $12,
+       template = $2,
+       status = $3,
+       resume_data = $4,
        updated_at = CURRENT_TIMESTAMP
-     WHERE id = $13
-     AND user_id = $14
+     WHERE id = $5
+       AND user_id = $6
      RETURNING *`,
     [
       title,
-      first_name,
-      last_name,
-      phone,
-      email,
-      location,
-      linkedin,
-      github,
-      portfolio,
-      summary,
       template,
       status,
+      JSON.stringify(resume_data),
       resumeId,
       userId,
     ]
@@ -105,7 +77,7 @@ async function deleteResume(resumeId, userId) {
   const result = await pool.query(
     `DELETE FROM resumes
      WHERE id = $1
-     AND user_id = $2
+       AND user_id = $2
      RETURNING id`,
     [resumeId, userId]
   );

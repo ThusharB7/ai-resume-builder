@@ -7,23 +7,10 @@ const {
 } = require("../models/resumeModel");
 
 async function create(req, res) {
-  
   try {
-    console.log(req.body);
-
     const { title } = req.body || {};
 
-    if (!title) {
-      return res.status(400).json({
-        message: "Resume title is required",
-      });
-    }
-
-    // ...
-
-    
-
-    if (!title) {
+    if (!title || !title.trim()) {
       return res.status(400).json({
         message: "Resume title is required",
       });
@@ -38,7 +25,6 @@ async function create(req, res) {
       message: "Resume created successfully",
       resume,
     });
-
   } catch (error) {
     console.error("Create Resume Error:", error);
 
@@ -67,7 +53,13 @@ async function getAll(req, res) {
 
 async function getOne(req, res) {
   try {
-    const resumeId = req.params.id;
+    const resumeId = Number(req.params.id);
+
+    if (isNaN(resumeId)) {
+      return res.status(400).json({
+        message: "Invalid resume ID",
+      });
+    }
 
     const resume = await findResumeById(
       resumeId,
@@ -83,7 +75,6 @@ async function getOne(req, res) {
     return res.status(200).json({
       resume,
     });
-
   } catch (error) {
     console.error("Get Resume Error:", error);
 
@@ -124,7 +115,6 @@ async function update(req, res) {
       message: "Resume updated successfully",
       resume: updatedResume,
     });
-
   } catch (error) {
     console.error("Update Resume Error:", error);
 
@@ -158,7 +148,6 @@ async function remove(req, res) {
     return res.status(200).json({
       message: "Resume deleted successfully",
     });
-
   } catch (error) {
     console.error("Delete Resume Error:", error);
 
