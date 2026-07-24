@@ -67,7 +67,14 @@ export const ResumeProvider = ({ children }) => {
   const [resume, setResume] = useState(initialResume);
   const [resumeId, setResumeId] = useState(null);
 
+  // NEW
+  const [selectedTemplate, setSelectedTemplate] =
+    useState("modern");
+
+  // -----------------------------
   // Update non-array sections
+  // -----------------------------
+
   const updateSection = (section, data) => {
     setResume((prev) => ({
       ...prev,
@@ -75,7 +82,10 @@ export const ResumeProvider = ({ children }) => {
     }));
   };
 
+  // -----------------------------
   // Add item
+  // -----------------------------
+
   const addItem = (section, newItem) => {
     setResume((prev) => ({
       ...prev,
@@ -83,8 +93,16 @@ export const ResumeProvider = ({ children }) => {
     }));
   };
 
+  // -----------------------------
   // Update item
-  const updateItem = (section, index, field, value) => {
+  // -----------------------------
+
+  const updateItem = (
+    section,
+    index,
+    field,
+    value
+  ) => {
     setResume((prev) => {
       const updated = [...prev[section]];
 
@@ -100,21 +118,34 @@ export const ResumeProvider = ({ children }) => {
     });
   };
 
+  // -----------------------------
   // Remove item
+  // -----------------------------
+
   const removeItem = (section, index) => {
     setResume((prev) => ({
       ...prev,
-      [section]: prev[section].filter((_, i) => i !== index),
+      [section]: prev[section].filter(
+        (_, i) => i !== index
+      ),
     }));
   };
-
-  return (
+    return (
     <ResumeContext.Provider
       value={{
+        // Resume State
         resume,
         setResume,
+
+        // Resume ID
         resumeId,
         setResumeId,
+
+        // Selected Template
+        selectedTemplate,
+        setSelectedTemplate,
+
+        // Helpers
         updateSection,
         addItem,
         updateItem,
